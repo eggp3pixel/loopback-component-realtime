@@ -135,7 +135,9 @@ class PubSubMixin {
                 method: ctx.req.method,
                 endpoint: ctx.req.originalUrl,
                 data: instance
-              }, next);
+              }, ()=>{
+                this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
+              });
             }
           );
         } else {
@@ -145,23 +147,25 @@ class PubSubMixin {
             endpoint: ctx.req.originalUrl,
             data: remoteMethodOutput
           }, ()=>{
-            if(ctx.methodString.match(/__(patchAttributes)__/g))
-            {
-              Model.app.mx.PubSub.publish({
-                method: ctx.req.method,
-                endpoint: ctx.req.baseUrl,
-                data: remoteMethodOutput
-              },next);
-            }
-            else
-            {
-              next();
-            }
+            this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
           });
         }
       }
     });
   };
+
+  private _handlePatchAttributes(ctx: any, Model: any, remoteMethodOutput: any, next: any) {
+    if (ctx.methodString.match(/__(patchAttributes)__/g)) {
+      Model.app.mx.PubSub.publish({
+        method: ctx.req.method,
+        endpoint: ctx.req.baseUrl,
+        data: remoteMethodOutput
+      }, next);
+    }
+    else {
+      next();
+    }
+  }
 }
 
 module.exports = PubSubMixin;

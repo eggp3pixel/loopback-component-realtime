@@ -27,6 +27,7 @@ var LoopBackContext = require('loopback-context');
  */
 var PubSubMixin = (function () {
     function PubSubMixin(Model, options) {
+        var _this = this;
         options = Object.assign({ filters: {} }, options);
         Model.afterRemote('**', function (ctx, remoteMethodOutput, next) {
             if (ctx.req.method === 'GET' || ctx.req.method === 'HEAD' ||
@@ -134,7 +135,9 @@ var PubSubMixin = (function () {
                             method: ctx.req.method,
                             endpoint: ctx.req.originalUrl,
                             data: instance
-                        }, next);
+                        }, function () {
+                            _this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
+                        });
                     });
                 }
                 else {
@@ -144,16 +147,7 @@ var PubSubMixin = (function () {
                         endpoint: ctx.req.originalUrl,
                         data: remoteMethodOutput
                     }, function () {
-                        if (ctx.methodString.match(/__(patchAttributes)__/g)) {
-                            Model.app.mx.PubSub.publish({
-                                method: ctx.req.method,
-                                endpoint: ctx.req.baseUrl,
-                                data: remoteMethodOutput
-                            }, next);
-                        }
-                        else {
-                            next();
-                        }
+                        _this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
                     });
                 }
             }
@@ -161,6 +155,18 @@ var PubSubMixin = (function () {
         });
     }
     ;
+    PubSubMixin.prototype._handlePatchAttributes = function (ctx, Model, remoteMethodOutput, next) {
+        if (ctx.methodString.match(/__(patchAttributes)__/g)) {
+            Model.app.mx.PubSub.publish({
+                method: ctx.req.method,
+                endpoint: ctx.req.baseUrl,
+                data: remoteMethodOutput
+            }, next);
+        }
+        else {
+            next();
+        }
+    };
     return PubSubMixin;
 }());
 module.exports = PubSubMixin;
