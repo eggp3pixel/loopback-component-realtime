@@ -80,7 +80,12 @@ export class IODriver implements DriverInterface {
     socket.on('ME:RT:1://event', (input: { event: string, data: any }) => {
       this.server.emit(input.event, input.data);
     });
-    socket.on('disconnect', () => socket.removeAllListeners());
+    socket.on('disconnect', () => {
+      if(this.connections.indexOf(socket) > -1)
+      {
+        this.connections.splice(this.connections.indexOf(socket),1);
+      }
+      return socket.removeAllListeners()});
     socket.on('lb-ping', () => socket.emit('lb-pong', new Date().getTime() / 1000));
   }
 }
