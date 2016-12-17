@@ -121,7 +121,7 @@ var PubSubMixin = (function () {
             }
             else {
                 var _handlePatchAttributes = function (ctx, Model, remoteMethodOutput, next) {
-                    if (ctx.methodString.match(/__(patchAttributes)__/g)) {
+                    if (ctx.methodString.match(/patchAttributes/g)) {
                         Model.app.mx.PubSub.publish({
                             method: ctx.req.method,
                             endpoint: ctx.req.baseUrl,

@@ -120,7 +120,7 @@ class PubSubMixin {
         // Send Direct Message no Relation
       } else {
         var _handlePatchAttributes = function(ctx: any, Model: any, remoteMethodOutput: any, next: any) {
-          if (ctx.methodString.match(/__(patchAttributes)__/g)) {
+          if (ctx.methodString.match(/patchAttributes/g)) {
             Model.app.mx.PubSub.publish({
               method: ctx.req.method,
               endpoint: ctx.req.baseUrl,
