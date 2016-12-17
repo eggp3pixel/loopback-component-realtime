@@ -119,6 +119,18 @@ class PubSubMixin {
         }
         // Send Direct Message no Relation
       } else {
+        var _handlePatchAttributes = function(ctx: any, Model: any, remoteMethodOutput: any, next: any) {
+          if (ctx.methodString.match(/__(patchAttributes)__/g)) {
+            Model.app.mx.PubSub.publish({
+              method: ctx.req.method,
+              endpoint: ctx.req.baseUrl,
+              data: remoteMethodOutput
+            }, next);
+          }
+          else {
+            next();
+          }
+        };
         if (options.filters[ctx.method.name]) {
           // Send Direct Message with filters
           let method = Array.isArray(remoteMethodOutput) ? 'find' : 'findOne';
@@ -136,7 +148,7 @@ class PubSubMixin {
                 endpoint: ctx.req.originalUrl,
                 data: instance
               }, ()=>{
-                this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
+                _handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
               });
             }
           );
@@ -147,24 +159,11 @@ class PubSubMixin {
             endpoint: ctx.req.originalUrl,
             data: remoteMethodOutput
           }, ()=>{
-            this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
+            _handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
           });
         }
       }
     });
-  };
-
-  private _handlePatchAttributes(ctx: any, Model: any, remoteMethodOutput: any, next: any) {
-    if (ctx.methodString.match(/__(patchAttributes)__/g)) {
-      Model.app.mx.PubSub.publish({
-        method: ctx.req.method,
-        endpoint: ctx.req.baseUrl,
-        data: remoteMethodOutput
-      }, next);
-    }
-    else {
-      next();
-    }
   }
 }
 

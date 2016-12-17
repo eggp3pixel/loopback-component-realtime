@@ -27,7 +27,6 @@ var LoopBackContext = require('loopback-context');
  */
 var PubSubMixin = (function () {
     function PubSubMixin(Model, options) {
-        var _this = this;
         options = Object.assign({ filters: {} }, options);
         Model.afterRemote('**', function (ctx, remoteMethodOutput, next) {
             if (ctx.req.method === 'GET' || ctx.req.method === 'HEAD' ||
@@ -121,6 +120,18 @@ var PubSubMixin = (function () {
                 }
             }
             else {
+                var _handlePatchAttributes = function (ctx, Model, remoteMethodOutput, next) {
+                    if (ctx.methodString.match(/__(patchAttributes)__/g)) {
+                        Model.app.mx.PubSub.publish({
+                            method: ctx.req.method,
+                            endpoint: ctx.req.baseUrl,
+                            data: remoteMethodOutput
+                        }, next);
+                    }
+                    else {
+                        next();
+                    }
+                };
                 if (options.filters[ctx.method.name]) {
                     // Send Direct Message with filters
                     var method = Array.isArray(remoteMethodOutput) ? 'find' : 'findOne';
@@ -136,7 +147,7 @@ var PubSubMixin = (function () {
                             endpoint: ctx.req.originalUrl,
                             data: instance
                         }, function () {
-                            _this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
+                            _handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
                         });
                     });
                 }
@@ -147,26 +158,13 @@ var PubSubMixin = (function () {
                         endpoint: ctx.req.originalUrl,
                         data: remoteMethodOutput
                     }, function () {
-                        _this._handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
+                        _handlePatchAttributes(ctx, Model, remoteMethodOutput, next);
                     });
                 }
             }
             var _a;
         });
     }
-    ;
-    PubSubMixin.prototype._handlePatchAttributes = function (ctx, Model, remoteMethodOutput, next) {
-        if (ctx.methodString.match(/__(patchAttributes)__/g)) {
-            Model.app.mx.PubSub.publish({
-                method: ctx.req.method,
-                endpoint: ctx.req.baseUrl,
-                data: remoteMethodOutput
-            }, next);
-        }
-        else {
-            next();
-        }
-    };
     return PubSubMixin;
 }());
 module.exports = PubSubMixin;
