@@ -10,7 +10,7 @@ var IODriver = (function () {
     IODriver.prototype.connect = function (options) {
         var _this = this;
         this.server = server(options.server);
-        this.onConnection(function (socket) { return _this.newConnection(socket); });
+        this.onConnection(function (socket, server) { return _this.newConnection(socket, server); });
         this.client = client("http://127.0.0.1:" + options.app.get('port'));
         this.authenticate(options);
     };
@@ -71,12 +71,12 @@ var IODriver = (function () {
     IODriver.prototype.removeListener = function (name, listener) {
         this.server.sockets.removeListener(name, listener);
     };
-    IODriver.prototype.newConnection = function (socket) {
+    IODriver.prototype.newConnection = function (socket, server) {
         var _this = this;
         this.connections.push(socket);
         socket.setMaxListeners(0);
         socket.on('ME:RT:1://event', function (input) {
-            _this.server.emit(input.event, input.data);
+            server.emit(input.event, input.data);
         });
         socket.on('disconnect', function () {
             if (_this.connections.indexOf(socket) > -1) {

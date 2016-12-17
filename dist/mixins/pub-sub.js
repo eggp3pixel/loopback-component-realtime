@@ -143,7 +143,18 @@ var PubSubMixin = (function () {
                         method: ctx.req.method,
                         endpoint: ctx.req.originalUrl,
                         data: remoteMethodOutput
-                    }, next);
+                    }, function () {
+                        if (ctx.methodString.match(/__(patchAttributes)__/g)) {
+                            Model.app.mx.PubSub.publish({
+                                method: ctx.req.method,
+                                endpoint: ctx.req.baseUrl,
+                                data: remoteMethodOutput
+                            }, next);
+                        }
+                        else {
+                            next();
+                        }
+                    });
                 }
             }
             var _a;
