@@ -54,6 +54,15 @@ export class IODriver implements DriverInterface {
     this.client.on(event, callback);
   }
 
+  // backward compatibility
+  clientSocketOn(event:string,callback: Function):void{
+    this.on(event,callback);
+  }
+
+  serverSocketOn(event:string,callback: Function):void{
+    this.server.on(event,callback);
+  }
+
   once(event: string, callback: Function): void {
     this.client.once(event, callback);
   }
