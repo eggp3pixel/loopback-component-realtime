@@ -1,7 +1,7 @@
 "use strict";
-var logger_1 = require('../logger');
-var server = require('socket.io');
-var client = require('socket.io-client');
+var logger_1 = require("../logger");
+var server = require("socket.io");
+var client = require("socket.io-client");
 var ioAuth = require('socketio-auth');
 var IODriver = (function () {
     function IODriver() {
@@ -48,6 +48,13 @@ var IODriver = (function () {
     IODriver.prototype.on = function (event, callback) {
         this.client.on(event, callback);
     };
+    // backward compatibility
+    IODriver.prototype.clientSocketOn = function (event, callback) {
+        this.on(event, callback);
+    };
+    IODriver.prototype.serverSocketOn = function (event, callback) {
+        this.server.on(event, callback);
+    };
     IODriver.prototype.once = function (event, callback) {
         this.client.once(event, callback);
     };
@@ -71,10 +78,15 @@ var IODriver = (function () {
         socket.on('ME:RT:1://event', function (input) {
             _this.server.emit(input.event, input.data);
         });
-        socket.on('disconnect', function () { return socket.removeAllListeners(); });
+        socket.on('disconnect', function () {
+            if (_this.connections.indexOf(socket) > -1) {
+                _this.connections.splice(_this.connections.indexOf(socket), 1);
+            }
+            return socket.removeAllListeners();
+        });
         socket.on('lb-ping', function () { return socket.emit('lb-pong', new Date().getTime() / 1000); });
     };
     return IODriver;
 }());
 exports.IODriver = IODriver;
-//# sourceMappingURL=/Volumes/HD710M/development/www/mean.expert/@mean-expert/loopback-component-realtime/src/drivers/io.driver.js.map
+//# sourceMappingURL=/home/eggp/Projects/3pixel/loopback-component-realtime/src/drivers/io.driver.js.map

@@ -1,5 +1,5 @@
 "use strict";
-var logger_1 = require('../logger');
+var logger_1 = require("../logger");
 /**
  * @module IO
  * @author Jonathan Casarrubias <t:@johncasarrubias, gh:github.com/mean-expert-official>
@@ -25,4 +25,4 @@ var IO = (function () {
     return IO;
 }());
 exports.IO = IO;
-//# sourceMappingURL=/Volumes/HD710M/development/www/mean.expert/@mean-expert/loopback-component-realtime/src/modules/IO.js.map
+//# sourceMappingURL=/home/eggp/Projects/3pixel/loopback-component-realtime/src/modules/IO.js.map

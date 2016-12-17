@@ -1,5 +1,5 @@
 "use strict";
-var async = require('async');
+var async = require("async");
 var LoopBackContext = require('loopback-context');
 /**
  * @module LoopBack Component PubSub - Mixin -
@@ -49,31 +49,37 @@ var PubSubMixin = (function () {
                 // Send Forward and Backward Messages in Parallel
                 async.parallel([
                     // Send Forward Message
-                    function (next) { return Model.app.models[related_1].findOne(Object.assign({
-                        where: (_a = {}, _a[Model.app.models[related_1].getIdName()] = ctx.req.params.fk, _a)
-                    }, (options.filters[ctx.method.name] && options.filters[ctx.method.name].forFK) ?
-                        options.filters[ctx.method.name].forFK : {}), function (err, res) {
-                        if (err)
-                            return next(err);
-                        Model.app.mx.PubSub.publish({
-                            method: ctx.req.method,
-                            endpoint: original_1,
-                            data: res
-                        }, next);
-                    }); var _a; },
+                    function (next) {
+                        return Model.app.models[related_1].findOne(Object.assign({
+                            where: (_a = {}, _a[Model.app.models[related_1].getIdName()] = ctx.req.params.fk, _a)
+                        }, (options.filters[ctx.method.name] && options.filters[ctx.method.name].forFK) ?
+                            options.filters[ctx.method.name].forFK : {}), function (err, res) {
+                            if (err)
+                                return next(err);
+                            Model.app.mx.PubSub.publish({
+                                method: ctx.req.method,
+                                endpoint: original_1,
+                                data: res
+                            }, next);
+                        });
+                        var _a;
+                    },
                     // Send Backward Message
-                    function (next) { return Model.app.models[current_1].findOne(Object.assign({
-                        where: (_a = {}, _a[Model.app.models[current_1].getIdName()] = ctx.req.params[Model.app.models[current_1].getIdName()], _a)
-                    }, (options.filters[ctx.method.name] && options.filters[ctx.method.name].forPK) ?
-                        options.filters[ctx.method.name].forPK : {}), function (err, res) {
-                        if (err)
-                            return next(err);
-                        Model.app.mx.PubSub.publish({
-                            method: ctx.req.method,
-                            endpoint: '/' + [inverse_1[0], inverse_1[3], ctx.req.params.fk, inverse_1[1], inverse_1[4]].join('/'),
-                            data: res
-                        }, next);
-                    }); var _a; }
+                    function (next) {
+                        return Model.app.models[current_1].findOne(Object.assign({
+                            where: (_a = {}, _a[Model.app.models[current_1].getIdName()] = ctx.req.params[Model.app.models[current_1].getIdName()], _a)
+                        }, (options.filters[ctx.method.name] && options.filters[ctx.method.name].forPK) ?
+                            options.filters[ctx.method.name].forPK : {}), function (err, res) {
+                            if (err)
+                                return next(err);
+                            Model.app.mx.PubSub.publish({
+                                method: ctx.req.method,
+                                endpoint: '/' + [inverse_1[0], inverse_1[3], ctx.req.params.fk, inverse_1[1], inverse_1[4]].join('/'),
+                                data: res
+                            }, next);
+                        });
+                        var _a;
+                    }
                 ], next);
             }
             else if (ctx.methodString.match(/__(create)__/g)) {
@@ -88,8 +94,7 @@ var PubSubMixin = (function () {
                     var query = Object.assign({
                         where: (_a = {},
                             _a[Model.app.models[related].getIdName()] = remoteMethodOutput[Model.app.models[related].getIdName()],
-                            _a
-                        )
+                            _a)
                     }, options.filters[ctx.method.name]);
                     Model.app.models[related][method](query, function (err, instance) {
                         if (err)
@@ -148,4 +153,4 @@ var PubSubMixin = (function () {
     return PubSubMixin;
 }());
 module.exports = PubSubMixin;
-//# sourceMappingURL=/Volumes/HD710M/development/www/mean.expert/@mean-expert/loopback-component-realtime/src/mixins/pub-sub.js.map
+//# sourceMappingURL=/home/eggp/Projects/3pixel/loopback-component-realtime/src/mixins/pub-sub.js.map

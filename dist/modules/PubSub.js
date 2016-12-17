@@ -1,5 +1,5 @@
 "use strict";
-var logger_1 = require('../logger');
+var logger_1 = require("../logger");
 /**
  * @module PubSub
  * @author Jonathan Casarrubias <t:@johncasarrubias, gh:github.com/mean-expert-official>
@@ -37,4 +37,4 @@ var PubSub = (function () {
     return PubSub;
 }());
 exports.PubSub = PubSub;
-//# sourceMappingURL=/Volumes/HD710M/development/www/mean.expert/@mean-expert/loopback-component-realtime/src/modules/PubSub.js.map
+//# sourceMappingURL=/home/eggp/Projects/3pixel/loopback-component-realtime/src/modules/PubSub.js.map

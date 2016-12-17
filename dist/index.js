@@ -1,6 +1,6 @@
 "use strict";
-var factory_1 = require('./drivers/factory');
-var logger_1 = require('./logger');
+var factory_1 = require("./drivers/factory");
+var logger_1 = require("./logger");
 /**
  * @module @mean-expert/loopback-component-realtime
  * @author Jonathan Casarrubias <t:@johncasarrubias, gh:github.com/mean-expert-official>
@@ -40,13 +40,13 @@ var RealTime = (function () {
                 require("./modules/" + _module)[_module](RealTime.driver, RealTime.options);
         });
     };
-    RealTime.options = {
-        driver: { name: 'socket.io' },
-        debug: false,
-        auth: true,
-        modules: ['PubSub', 'IO', 'FireLoop', 'WebRTCSignaler']
-    };
     return RealTime;
 }());
+RealTime.options = {
+    driver: { name: 'socket.io' },
+    debug: false,
+    auth: true,
+    modules: ['PubSub', 'IO', 'FireLoop', 'WebRTCSignaler']
+};
 module.exports = RealTime;
-//# sourceMappingURL=/Volumes/HD710M/development/www/mean.expert/@mean-expert/loopback-component-realtime/src/index.js.map
+//# sourceMappingURL=/home/eggp/Projects/3pixel/loopback-component-realtime/src/index.js.map
